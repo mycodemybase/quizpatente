@@ -115,6 +115,8 @@ document.getElementById("savePDF").addEventListener("click", function() {
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
     }).from(element).save();
 });
+    const iframe = document.querySelector('iframe');
+console.log(iframe.contentDocument); 
 </script>
 
 </body>
