@@ -1,3 +1,4 @@
+<!--
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,6 +29,92 @@
 
 <script>
 
+</script>
+
+</body>
+</html>
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Patente</title>
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+input[type="text"] {
+    padding: 5px;
+    font-size: 16px;
+}
+
+button {
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+iframe {
+    width: 100vw;
+    height: calc(100vh - 50px); /* leave space for header */
+    border: none;
+    display: block;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <label for="name">Your Name:</label>
+    <input type="text" id="name" placeholder="Enter your name">
+    <button id="savePDF">Save Page as PDF</button>
+</header>
+
+<main>
+    <iframe src="https://www.quizpatenteonline.it/quiz-patente-b" title="Quiz"></iframe>
+</main>
+
+<!-- html2pdf.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+document.getElementById("savePDF").addEventListener("click", function() {
+    const name = document.getElementById("name").value.trim();
+    if (!name) {
+        alert("Please enter your name first!");
+        return;
+    }
+
+    // Create a temporary div to save content
+    const element = document.createElement("div");
+    element.innerHTML = `<h1>Quiz Patente - ${name}</h1>
+                         <p>Saved page from iframe is included below:</p>
+                         <iframe src="https://www.quizpatenteonline.it/quiz-patente-b" style="width:100%; height:500px;"></iframe>`;
+
+    // Save as PDF
+    html2pdf().set({
+        margin: 10,
+        filename: `${name}-quiz-patente.pdf`,
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    }).from(element).save();
+});
 </script>
 
 </body>
