@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Load 1.xlsx from Same Folder</title>
+    <title>Carica 1.xlsx dalla repo</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; }
         table { border-collapse: collapse; width: 100%; margin-top: 20px; }
@@ -11,65 +11,58 @@
     </style>
 </head>
 <body>
-    <h1>Excel Data from 1.xlsx</h1>
-
-    <!-- File input to select 1.xlsx -->
-    <input type="file" id="fileInput" accept=".xlsx,.xls" />
-
+    <h1>Dati da 1.xlsx</h1>
     <table id="excelTable"></table>
 
     <!-- SheetJS library -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
     <script>
-        document.getElementById('fileInput').addEventListener('change', handleFile, false);
+        // File Excel nella stessa cartella della pagina HTML
+        const excelFile = "1.xlsx";
 
-        function handleFile(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+        fetch(excelFile)
+            .then(response => {
+                if (!response.ok) throw new Error("Impossibile caricare il file Excel");
+                return response.arrayBuffer();
+            })
+            .then(data => {
+                const workbook = XLSX.read(data, { type: "array" });
 
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const data = new Uint8Array(event.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-
-                // Merge all sheets into one array
                 let mergedData = [];
                 workbook.SheetNames.forEach(sheetName => {
                     const sheet = workbook.Sheets[sheetName];
                     const sheetData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-                    // Add sheet name as first column
-                    sheetData.forEach(row => row.unshift(sheetName));
+                    sheetData.forEach(row => row.unshift(sheetName)); // aggiungi nome sheet
                     mergedData = mergedData.concat(sheetData);
                 });
 
                 displayData(mergedData);
-            };
-            reader.readAsArrayBuffer(file);
-        }
+            })
+            .catch(err => console.error("Errore caricamento Excel:", err));
 
         function displayData(data) {
-            const table = document.getElementById('excelTable');
+            const table = document.getElementById("excelTable");
             table.innerHTML = "";
 
-            // Optional header row
             if (data.length > 0) {
-                const headerRow = document.createElement('tr');
+                // header
+                const headerRow = document.createElement("tr");
                 data[0].forEach((cell, idx) => {
-                    const th = document.createElement('th');
-                    th.textContent = idx === 0 ? 'Sheet' : cell;
+                    const th = document.createElement("th");
+                    th.textContent = idx === 0 ? "Sheet" : cell;
                     headerRow.appendChild(th);
                 });
                 table.appendChild(headerRow);
-                data = data.slice(1); // remove header row from data
+                data = data.slice(1);
             }
 
-            // Add data rows
+            // dati
             data.forEach(row => {
-                const tr = document.createElement('tr');
+                const tr = document.createElement("tr");
                 row.forEach(cell => {
-                    const td = document.createElement('td');
-                    td.textContent = cell !== undefined ? cell : '';
+                    const td = document.createElement("td");
+                    td.textContent = cell !== undefined ? cell : "";
                     tr.appendChild(td);
                 });
                 table.appendChild(tr);
